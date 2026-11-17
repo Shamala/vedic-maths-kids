@@ -1,0 +1,20 @@
+{
+  "name": "vedic-maths-kids",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Installable React PWA that teaches kids (6-8) maths with Vedic techniques",
+  "scripts": {
+    "dev": "node build.mjs --serve",
+    "build": "node build.mjs",
+    "icons": "node scripts/icons.mjs"
+  },
+  "dependencies": {
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.0",
+    "sharp": "^0.35.0"
+  }
+}

@@ -1,0 +1,25 @@
+// Generates PNG icons from an SVG owl. Run once: npm run icons
+import sharp from 'sharp';
+import { writeFileSync } from 'node:fs';
+
+const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#8b6bff"/><stop offset="1" stop-color="#5a3de0"/></linearGradient></defs>
+  <rect width="512" height="512" fill="url(#g)"/>
+  <g transform="translate(256 262)">
+    <path d="M-92 -96 L-70 -150 L-34 -108 Z M92 -96 L70 -150 L34 -108 Z" fill="#ff9f1c"/>
+    <ellipse cx="0" cy="10" rx="112" ry="124" fill="#ffb938"/>
+    <ellipse cx="0" cy="48" rx="66" ry="70" fill="#ffe3a3"/>
+    <circle cx="-48" cy="-24" r="42" fill="#fff"/><circle cx="48" cy="-24" r="42" fill="#fff"/>
+    <circle cx="-44" cy="-22" r="20" fill="#2b2160"/><circle cx="52" cy="-22" r="20" fill="#2b2160"/>
+    <circle cx="-38" cy="-29" r="7" fill="#fff"/><circle cx="58" cy="-29" r="7" fill="#fff"/>
+    <path d="M-16 12 L16 12 L0 40 Z" fill="#ff6b3d"/>
+    <text x="0" y="116" font-family="Arial, sans-serif" font-weight="800" font-size="52" text-anchor="middle" fill="#6c4cf1">7×8</text>
+  </g>
+</svg>`;
+
+writeFileSync('public/icons/icon.svg', svg);
+for (const [name, size] of [['icon-192', 192], ['icon-512', 512], ['apple-touch-icon', 180]]) {
+  await sharp(Buffer.from(svg)).resize(size, size).png().toFile(`public/icons/${name}.png`);
+}
+console.log('icons done');
