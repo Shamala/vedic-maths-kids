@@ -14,7 +14,7 @@
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 html, body { margin: 0; min-height: 100%; }
 body {
-  background: linear-gradient(180deg, #ffd0e6 0%, #ffe8f3 45%, #fff2cc 100%) fixed;
+  background: linear-gradient(180deg, #6ed0ff 0%, #b9ecff 48%, #fff0bf 100%) fixed;
   overscroll-behavior-y: none;
 }
 button, input { font: inherit; color: inherit; }
@@ -246,3 +246,87 @@ button:focus-visible, input:focus-visible { outline: 4px solid #ffc83d; outline-
 @keyframes crumb { 0% { transform: translate(0, 0); opacity: 1; } 100% { transform: translate(var(--cx), var(--cy)) rotate(200deg); opacity: 0; } }
 @keyframes fadein { from { opacity: 0; } }
 @keyframes pulse { 50% { transform: scale(1.04); } }
+
+/* ───── Sunny animated beach ───── */
+:root {
+  --wave: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='80' height='28'><path d='M0 14 Q10 4 20 14 T40 14 T60 14 T80 14' fill='none' stroke='white' stroke-width='2.5' stroke-linecap='round'/></svg>");
+}
+.screen { position: relative; z-index: 1; }
+.beach { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+.sunbox { position: absolute; top: -24px; right: -24px; width: 200px; height: 200px; display: grid; place-items: center; }
+.sunburst { position: absolute; inset: 0; border-radius: 50%; background: repeating-conic-gradient(rgba(255, 226, 110, .75) 0 7deg, transparent 7deg 18deg); -webkit-mask: radial-gradient(circle, #000 26%, transparent 70%); mask: radial-gradient(circle, #000 26%, transparent 70%); animation: spin 45s linear infinite; }
+.suncore { position: relative; width: 84px; height: 84px; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #fff9c2, #ffd23f 60%, #ffb000); box-shadow: 0 0 50px 22px rgba(255, 214, 70, .65); animation: glow 4s ease-in-out infinite alternate; }
+.cloud { position: absolute; opacity: .95; animation: cloudmove 80s linear infinite; filter: drop-shadow(0 4px 0 rgba(120, 190, 230, .25)); }
+.beach .cloud.b1 { top: 70px; font-size: 3.6rem; }
+.beach .cloud.b2 { top: 150px; font-size: 2.4rem; animation-duration: 110s; animation-delay: -45s; }
+.beach .cloud.b3 { top: 36%; font-size: 3rem; animation-duration: 95s; animation-delay: -20s; }
+.seaband { position: absolute; left: 0; right: 0; bottom: 48px; height: 96px; background: linear-gradient(#63daf2, #1fb0dc); overflow: hidden; }
+.sandband { position: absolute; left: 0; right: 0; bottom: 0; height: 64px; background: linear-gradient(#fbe7ab, #f1cd78); border-radius: 50% 50% 0 0 / 22px 22px 0 0; box-shadow: 0 -6px 0 rgba(255, 255, 255, .7); }
+.waves { position: absolute; inset: 0; background-image: var(--wave); background-size: 80px 28px; opacity: .5; animation: wavex 7s linear infinite; --tile: 80px; }
+.waves.w2 { background-size: 130px 44px; opacity: .32; background-position-y: 16px; animation-duration: 12s; animation-direction: reverse; --tile: 130px; }
+.palm { transform-origin: 50% 100%; transform-box: fill-box; animation: sway 4.6s ease-in-out infinite alternate; }
+.bp { position: absolute; bottom: 30px; }
+.bp1 { left: -6px; width: 92px; height: 130px; }
+.bp2 { right: 4px; width: 78px; height: 110px; animation-delay: -1.8s; }
+.bp3 { right: 74px; width: 54px; height: 76px; bottom: 36px; animation-delay: -3s; }
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes glow { to { box-shadow: 0 0 64px 30px rgba(255, 214, 70, .8); } }
+@keyframes cloudmove { from { transform: translateX(-160px); } to { transform: translateX(115vw); } }
+@keyframes wavex { to { background-position-x: var(--tile); } }
+@keyframes sway { from { transform: rotate(-3.5deg); } to { transform: rotate(3.5deg); } }
+@keyframes bob { 50% { transform: translateY(-7px); } }
+@keyframes march { to { stroke-dashoffset: -22; } }
+
+/* ───── Treasure-island map ───── */
+.seamap { position: relative; width: 100%; border-radius: 28px; overflow: hidden; flex: none; background: linear-gradient(#7fe0f5 0, #3cc6e8 10%, #1fb0dc 100%); box-shadow: 0 6px 0 rgba(0, 0, 0, .14), inset 0 0 0 4px rgba(255, 255, 255, .55); }
+.seamap .waves { opacity: .38; }
+.seamap .waves.w2 { opacity: .24; }
+.seamap .sunbox { top: -30px; right: -30px; }
+.seamap .cloud { animation-name: cloudmap; filter: none; opacity: .85; }
+@keyframes cloudmap { from { transform: translateX(-180px); } to { transform: translateX(620px); } }
+.mapsvg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.mapsvg .foam { transform-box: fill-box; transform-origin: center; animation: foam 3.4s ease-in-out infinite; }
+.mapsvg .shallow { transform-box: fill-box; transform-origin: center; animation: foam 5s ease-in-out infinite reverse; }
+@keyframes foam { 50% { transform: scale(1.035); opacity: .5; } }
+.trail { fill: none; stroke: #fff; stroke-width: 5; stroke-linecap: round; stroke-dasharray: .1 11; opacity: .9; }
+.trail.done { stroke: #e63946; stroke-width: 6.5; opacity: 1; animation: march 1.6s linear infinite; }
+.xmark { animation: bob 1.6s ease-in-out infinite; }
+.ship, .chest { position: absolute; transform: translate(-50%, -50%); z-index: 3; display: flex; flex-direction: column; align-items: center; animation: bob 2.6s ease-in-out infinite; font-size: 2.4rem; line-height: 1; }
+.ship small { font-size: .7rem; font-weight: 800; background: #fff; color: var(--ink); border-radius: 8px; padding: 0 7px; margin-top: 2px; }
+.chest { font-size: 2.1rem; }
+.sign { position: absolute; transform: translate(-50%, -100%); z-index: 4; text-align: center; color: #fff; background: linear-gradient(#cf9650, #a9692b); border: 3px solid #6d3d14; border-radius: 12px; padding: 5px 14px; box-shadow: 0 4px 0 rgba(0, 0, 0, .2); white-space: nowrap; }
+.sign b { display: block; font-size: .92rem; text-shadow: 0 1px 0 rgba(0, 0, 0, .3); }
+.sign small { font-weight: 700; opacity: .92; }
+.sign::after { content: ''; position: absolute; left: 50%; top: 100%; width: 7px; height: 16px; margin-left: -3.5px; background: #6d3d14; border-radius: 0 0 3px 3px; }
+.mnode { position: absolute; width: 124px; transform: translate(-50%, -34px); background: none; border: 0; padding: 0; display: flex; flex-direction: column; align-items: center; z-index: 3; }
+.mcircle { position: relative; width: 68px; height: 68px; border-radius: 50%; background: var(--c); border: 5px solid #fff; display: grid; place-items: center; font-size: 1.9rem; box-shadow: 0 6px 0 rgba(0, 0, 0, .22), 0 0 0 5px rgba(255, 255, 255, .3); transition: transform .1s; }
+.mnode:active .mcircle { transform: translateY(3px); }
+.mnum { position: absolute; top: -9px; left: -9px; min-width: 22px; height: 22px; padding: 0 4px; display: grid; place-items: center; background: #fff; color: var(--ink); font-size: .72rem; font-weight: 900; border-radius: 999px; box-shadow: 0 2px 0 rgba(0, 0, 0, .2); }
+.mlabel { margin-top: 8px; background: rgba(255, 255, 255, .94); border-radius: 12px; padding: 3px 8px 2px; font-size: .7rem; line-height: 1.15; display: flex; flex-direction: column; align-items: center; text-align: center; box-shadow: 0 2px 0 rgba(0, 0, 0, .14); }
+.mnode.locked .mcircle { background: #cdbfc6; filter: grayscale(.3); }
+.mnode.locked .mlabel { opacity: .85; }
+.mnode.current .mcircle { animation: bob 1.2s ease-in-out infinite; box-shadow: 0 6px 0 rgba(0, 0, 0, .22), 0 0 0 7px rgba(255, 255, 255, .65), 0 0 0 15px rgba(255, 214, 70, .5); }
+.mhero { position: absolute; top: -50px; left: 50%; margin-left: -18px; z-index: 4; pointer-events: none; animation: bob 1.2s ease-in-out infinite; }
+
+/* ───── Beach battle scene ───── */
+.scene { background: linear-gradient(#7fd8ff 0%, #c9f1ff 44%, #38c3e6 44%, #22b0da 58%, #f8de9a 58%, #f1cd78 100%); }
+.scene::before { animation: cloudscene 40s linear infinite; }
+.scene::after { animation: glow2 3s ease-in-out infinite alternate; }
+.sea-w { position: absolute; left: 0; right: 0; top: 44%; height: 14%; overflow: hidden; }
+.sea-w::before { content: ''; position: absolute; inset: 0; background-image: var(--wave); background-size: 60px 21px; opacity: .6; animation: wavex 5s linear infinite; --tile: 60px; }
+.palm-s { position: absolute; z-index: 1; width: 44px; height: 63px; bottom: 82px; }
+.ps1 { left: 70px; }
+.ps2 { right: 104px; width: 38px; height: 54px; bottom: 86px; animation-delay: -2s; }
+.hut { position: absolute; left: 8px; bottom: 96px; font-size: 1.7rem; }
+.villagers { width: 108px; font-size: 1.2rem; bottom: 8px; }
+.hero-wrap { left: 30%; }
+.monster-wrap { right: 2px; }
+@keyframes cloudscene { from { transform: translateX(-40px); } to { transform: translateX(330px); } }
+@keyframes glow2 { to { transform: scale(1.12); } }
+
+/* ───── Showers ───── */
+.shower { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 60; }
+.shower span { position: absolute; top: -34px; height: 6px; border-radius: 3px; opacity: .95; animation: sprinkle linear forwards; }
+.shower.monsters span { height: auto; border-radius: 0; animation-name: mrain; }
+@keyframes sprinkle { to { transform: translateY(112vh) rotate(var(--rot)); } }
+@keyframes mrain { to { transform: translateY(115vh) rotate(var(--rot)); } }

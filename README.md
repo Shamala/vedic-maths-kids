@@ -7,10 +7,10 @@ An installable React app (PWA) that teaches children aged 6–12 maths with Vedi
 ## How a level works
 
 1. Learn the trick in a short lesson.
-2. Fight 6 monsters, one question each. A right answer zaps the monster and saves a little person.
-3. You get **5 chances**. Every wrong answer lets the monster **bite** Cupcake Hero (the cupcake is eaten away) and the Vedic method is shown so the child can try again.
-4. The **6th wrong answer** is the end: the monster gobbles up the cupcake, the little people scatter in fear, and a big **Restart level** button appears over the scene.
-5. Stars: 0–1 wrong = ⭐⭐⭐, 2–3 wrong = ⭐⭐, 4–5 wrong = ⭐. Stars unlock the next island and are kept as a best score.
+2. Fight 10 monsters, one question each. A right answer zaps the monster, a sprinkle shower falls and a little person is saved.
+3. You get **5 chances in total** across the whole level. Every wrong answer lets the monster **bite** Cupcake Hero (the cupcake is eaten away) and the Vedic method is shown so the child can try again.
+4. The **5th wrong answer** is the end: the monster gobbles up the cupcake, a little-monster shower falls, the little people scatter in fear, and a big **Restart level** button appears over the scene.
+5. Stars: 0–1 wrong = ⭐⭐⭐, 2–3 wrong = ⭐⭐, 4 wrong = ⭐. Stars unlock the next island and are kept as a best score.
 
 The artwork (hero and monsters) is original SVG in `src/art.js`. The chance rules live in `src/Quiz.jsx` (`CHANCES`).
 

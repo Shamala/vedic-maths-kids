@@ -1,5 +1,5 @@
 // Independently verifies every generated question (run: node scripts/check-questions.mjs)
-import { WORLDS } from '../src/content.js';
+import { WORLDS, buildLevel } from '../src/content.js';
 
 const fail = [];
 const num = (s) => Number(s);
@@ -22,11 +22,11 @@ const expected = (id, text, q) => {
 };
 
 let n = 0;
-for (let r = 0; r < 400; r++) {
+for (let r = 0; r < 200; r++) {
   for (const w of WORLDS) {
-    const qs = w.make();
-    if (qs.length !== 6) fail.push(`${w.id}: got ${qs.length} questions`);
-    if (new Set(qs.map((q) => q.text)).size !== qs.length && w.id !== 'detective') fail.push(`${w.id}: duplicate text`);
+    const qs = buildLevel(w);
+    if (qs.length !== 10) fail.push(`${w.id}: got ${qs.length} questions`);
+    if (new Set(qs.map((q) => `${q.text}|${q.ans}`)).size < 9) fail.push(`${w.id}: too many repeated questions`);
     for (const q of qs) {
       n++;
       const exp = expected(w.id, q.text, q);

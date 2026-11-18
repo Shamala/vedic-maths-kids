@@ -1,15 +1,15 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { MAX_BITES, MONSTER_KINDS } from './art';
-import { WORLDS, rnd } from './content';
+import { WORLDS, buildLevel, rnd } from './content';
 import { play } from './sound';
-import { Hero, Monster, Rich, SCARED, Stars } from './ui';
+import { Hero, Monster, MonsterShower, Palm, Rich, SCARED, SprinkleShower, Stars } from './ui';
 
-export const CHANCES = 5; // the 6th wrong answer means the monster gobbles the cupcake
+export const CHANCES = 5; // 5 wrong answers in total (across the whole level) and the monster gobbles the cupcake
 export const starsFor = (wrong) => (wrong <= 1 ? 3 : wrong <= 3 ? 2 : 1);
 
 export default function Quiz({ worldIndex, go, sound, onFinish, onLose }) {
   const w = WORLDS[worldIndex];
-  const questions = useMemo(() => w.make(), [w]);
+  const questions = useMemo(() => buildLevel(w), [w]);
   const started = useRef(Date.now());
   const timer = useRef();
   const strikesRef = useRef(0);
@@ -47,7 +47,7 @@ export default function Quiz({ worldIndex, go, sound, onFinish, onLose }) {
     strikesRef.current += 1;
     const n = strikesRef.current;
     setStrikes(n);
-    if (n > CHANCES) {
+    if (n >= CHANCES) {
       setLost(true);
       setFx('');
       clearTimeout(timer.current);
@@ -68,7 +68,7 @@ export default function Quiz({ worldIndex, go, sound, onFinish, onLose }) {
       return;
     }
     const stars = starsFor(strikes);
-    onFinish({ id: w.id, stars, firstTry, retried: questions.length - firstTry, strikes, secs: secs(), xp: firstTry * 10 + (questions.length - firstTry) * 5 + stars * 5 }, worldIndex);
+    onFinish({ id: w.id, stars, firstTry, retried: questions.length - firstTry, strikes, total: questions.length, secs: secs(), xp: firstTry * 10 + (questions.length - firstTry) * 5 + stars * 5 }, worldIndex);
   };
 
   const left = Math.max(0, CHANCES - strikes);
@@ -98,8 +98,10 @@ export default function Quiz({ worldIndex, go, sound, onFinish, onLose }) {
       </div>
 
       <div className={`scene ${fx} ${solved ? 'won' : ''} ${lost ? 'gobbled' : ''}`}>
-        <span className="house h1">🏡</span>
-        <span className="house h2">🏠</span>
+        <div className="sea-w" />
+        <Palm className="palm-s ps1" />
+        <Palm className="palm-s ps2" />
+        <span className="hut">🛖</span>
         <div className="villagers" aria-label={lost ? 'The little people are running away in fear' : `${saved} of ${questions.length} little people saved`}>
           {questions.map((_, i) => (
             <span key={i} className={lost ? 'flee' : i < saved ? 'ok' : 'scared'} style={lost ? flee[i] : undefined}>
@@ -107,9 +109,9 @@ export default function Quiz({ worldIndex, go, sound, onFinish, onLose }) {
             </span>
           ))}
         </div>
-        <div className="hero-wrap"><Hero size={122} mood={lost || fx === 'bite' ? 'hit' : solved ? 'win' : 'cool'} bites={lost ? MAX_BITES : bites} /></div>
+        <div className="hero-wrap"><Hero size={112} mood={lost || fx === 'bite' ? 'hit' : solved ? 'win' : 'cool'} bites={lost ? MAX_BITES : bites} /></div>
         <div className={`monster-wrap ${solved ? 'poof' : ''}`} key={lost ? 'gobble' : idx}>
-          <Monster kind={kind} size={lost ? 140 : idx === questions.length - 1 ? 132 : 108} />
+          <Monster kind={kind} size={lost ? 124 : idx === questions.length - 1 ? 116 : 100} />
         </div>
         {lost && (
           <div className="crumbs" aria-hidden="true">
@@ -123,6 +125,9 @@ export default function Quiz({ worldIndex, go, sound, onFinish, onLose }) {
           </div>
         )}
       </div>
+
+      {solved && <SprinkleShower key={idx} />}
+      {lost && <MonsterShower />}
 
       {lost ? (
         <>
@@ -151,7 +156,7 @@ export default function Quiz({ worldIndex, go, sound, onFinish, onLose }) {
           <div className={`speech big ${missed || solved ? '' : 'hidden'}`} role="status">
             <span className="bubble-emoji">{solved ? '💥' : '😬'}</span>
             <p>
-              {solved ? <b>{missed ? 'Monster defeated! ' : 'Zap! Monster defeated! '}</b> : <b>Chomp! {left === 0 ? 'Last chance!' : `${left} ${left === 1 ? 'chance' : 'chances'} left.`} </b>}
+              {solved ? <b>{missed ? 'Monster defeated! ' : 'Zap! Monster defeated! '}</b> : <b>Chomp! {left === 1 ? 'Last chance!' : `${left} ${left === 1 ? 'chance' : 'chances'} left.`} </b>}
               {(missed || solved) && <Rich text={`Vedic way: ${q.hint}`} />}
             </p>
           </div>

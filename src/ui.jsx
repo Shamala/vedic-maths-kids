@@ -1,5 +1,5 @@
 import { useId, useMemo } from 'react';
-import { cupcakeSVG, monsterSVG } from './art';
+import { MONSTER_KINDS, cupcakeSVG, monsterSVG, palmSVG } from './art';
 
 export const Rich = ({ text }) => (
   <>
@@ -31,7 +31,7 @@ export function Monster({ kind = 'gloop', size = 110, className = '' }) {
   return <svg className={`monster ${className}`} viewBox="0 0 140 140" width={size} height={size} aria-hidden="true" dangerouslySetInnerHTML={{ __html: html }} />;
 }
 
-export const SCARED = ['😨', '😱', '😰', '🥺', '😟', '😧'];
+export const SCARED = ['😨', '😱', '😰', '🥺', '😟', '😧', '😢', '😭', '😬', '🙀'];
 
 export const Stars = ({ n, max = 3, size = 22 }) => (
   <span className="stars" aria-label={`${n} of ${max} stars`} style={{ fontSize: size }}>
@@ -88,6 +88,61 @@ export function Board({ board }) {
             <Token t={t} key={j} />
           ))}
         </div>
+      ))}
+    </div>
+  );
+}
+
+export function Palm({ className = '', style }) {
+  const html = useMemo(() => palmSVG(), []);
+  return <svg className={`palm ${className}`} style={style} viewBox="0 0 70 100" aria-hidden="true" dangerouslySetInnerHTML={{ __html: html }} />;
+}
+
+const SPRINKLE_COLORS = ['#ff6b81', '#ffd60a', '#4cc9f0', '#7ae582', '#9b5de5', '#ff9f1c', '#ffffff'];
+
+// Rainbow sprinkles rain down when a monster is defeated
+export function SprinkleShower() {
+  const bits = useMemo(
+    () =>
+      Array.from({ length: 56 }, () => ({
+        left: Math.random() * 100,
+        delay: Math.random() * 0.6,
+        dur: 1.3 + Math.random() * 1.1,
+        rot: Math.round((Math.random() - 0.5) * 900),
+        w: 10 + Math.random() * 8,
+        c: SPRINKLE_COLORS[Math.floor(Math.random() * SPRINKLE_COLORS.length)],
+      })),
+    []
+  );
+  return (
+    <div className="shower" aria-hidden="true">
+      {bits.map((b, i) => (
+        <span key={i} style={{ left: `${b.left}%`, width: b.w, background: b.c, animationDelay: `${b.delay}s`, animationDuration: `${b.dur}s`, '--rot': `${b.rot}deg` }} />
+      ))}
+    </div>
+  );
+}
+
+// A rain of little monsters when the cupcake is gobbled up
+export function MonsterShower() {
+  const bits = useMemo(
+    () =>
+      Array.from({ length: 24 }, (_, i) => ({
+        kind: MONSTER_KINDS[i % MONSTER_KINDS.length],
+        left: Math.random() * 92,
+        size: 34 + Math.random() * 22,
+        delay: Math.random() * 1.1,
+        dur: 2.2 + Math.random() * 1.6,
+        rot: Math.round((Math.random() - 0.5) * 120),
+      })),
+    []
+  );
+  return (
+    <div className="shower monsters" aria-hidden="true">
+      {bits.map((b, i) => (
+        <span key={i} style={{ left: `${b.left}%`, animationDelay: `${b.delay}s`, animationDuration: `${b.dur}s`, '--rot': `${b.rot}deg` }}>
+          <Monster kind={b.kind} size={b.size} />
+        </span>
       ))}
     </div>
   );

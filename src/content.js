@@ -109,7 +109,7 @@ const CORE = [
       { say: 'Put them together: **5** and **6** make **56**! 7 × 8 = 56 🎉', boards: [{ type: 'eq', lines: [['b:5', 'c:6', '=', '56']] }] },
     ],
     make: () => {
-      const pairs = [[7, 7], [7, 8], [7, 9], [8, 8], [8, 9], [9, 9]];
+      const pairs = [[7, 7], [7, 8], [7, 9], [8, 8], [8, 9], [9, 9], [6, 7], [6, 8], [6, 9], [6, 6]];
       return shuffle(pairs).map(([x, y]) => {
         const [a, b] = rnd(0, 1) ? [x, y] : [y, x];
         const da = 10 - a, db = 10 - b;
@@ -165,8 +165,7 @@ const CORE = [
       { say: 'Now write **25** at the end: **12** then **25**. So 35 × 35 = **1225**! 🏰', boards: [{ type: 'eq', lines: [['c:12', 'a:25', '=', '1225']] }] },
     ],
     make: () =>
-      shuffle([1, 2, 3, 4, 5, 6, 7, 8, 9])
-        .slice(0, ROUND)
+      shuffle([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
         .sort((x, y) => x - y)
         .map((t) => {
           const m = t * (t + 1);
@@ -198,3 +197,22 @@ export const levelOf = (xp) => {
   return { n: lvl + 1, title: LEVELS[Math.min(lvl, LEVELS.length - 1)], pct: xp % 100 };
 };
 export const AVATARS = ['🦊', '🐼', '🦁', '🐯', '🐸', '🐵', '🦄', '🐙'];
+
+// Each level is a battle of 10 questions: one generator round plus harder extras.
+export const QUESTIONS_PER_LEVEL = 10;
+export function buildLevel(w, n = QUESTIONS_PER_LEVEL) {
+  const key = (q) => `${q.text}|${q.ans}`;
+  const out = [...w.make()];
+  const seen = new Set(out.map(key));
+  for (let g = 0; out.length < n && g < 15; g++) {
+    for (const q of w.make().slice(2)) {
+      if (out.length >= n) break;
+      if (!seen.has(key(q))) {
+        seen.add(key(q));
+        out.push(q);
+      }
+    }
+  }
+  while (out.length < n) out.push(w.make()[rnd(2, 5)]); // tiny question pools (e.g. squares ending in 5)
+  return out.slice(0, n);
+}

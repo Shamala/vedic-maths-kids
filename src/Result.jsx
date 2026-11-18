@@ -14,9 +14,9 @@ export default function Result({ result, worldIndex, go, sound }) {
       <h1 className="title">{result.stars === 3 ? 'Island saved!' : result.stars === 2 ? 'Great job, hero!' : 'You did it!'}</h1>
       <Stars n={result.stars} size={56} />
       <div className="card tally">
-        <p className="saved">😄😄😄😄😄😄</p>
-        <p>All 6 little people saved!</p>
-        <p><b>{result.firstTry}</b> of 6 monsters beaten first time</p>
+        <p className="saved">{'😄'.repeat(result.total || 10)}</p>
+        <p>All {result.total || 10} little people saved!</p>
+        <p><b>{result.firstTry}</b> of {result.total || 10} monsters beaten first time</p>
         <p className="xp">+{result.xp} XP ⚡</p>
       </div>
       <div className="row col">

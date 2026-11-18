@@ -1,7 +1,8 @@
-import { Fragment, useState } from 'react';
-import { REALMS, WORLDS, levelOf } from './content';
+import { useState } from 'react';
+import { WORLDS, levelOf } from './content';
 import { isUnlocked } from './store';
-import { Hero, Stars } from './ui';
+import SeaMap from './SeaMap';
+import { Hero } from './ui';
 
 export default function MapScreen({ state, setState, go, install }) {
   const [sheet, setSheet] = useState(null);
@@ -43,34 +44,10 @@ export default function MapScreen({ state, setState, go, install }) {
 
       <div className="speech">
         <Hero size={46} />
-        <p>{state.xp === 0 ? 'Monsters are attacking! Tap the first island to save the little people!' : 'Pick an island and save the little people!'}</p>
+        <p>{state.xp === 0 ? 'Monsters are attacking! Follow the dotted trail and save the little people!' : 'Follow the dotted trail to the treasure!'}</p>
       </div>
 
-      <ol className="path">
-        {WORLDS.map((w, i) => {
-          const unlocked = isUnlocked(WORLDS, i, state);
-          const stars = state.worlds[w.id]?.stars || 0;
-          return (
-            <Fragment key={w.id}>
-            {(i === 0 || WORLDS[i - 1].realm !== w.realm) && (
-              <li className="realm">
-                {REALMS[w.realm - 1].emoji} {REALMS[w.realm - 1].name} <small>{REALMS[w.realm - 1].age}</small>
-              </li>
-            )}
-            <li className={`node-row ${i % 2 ? 'right' : 'left'}`}>
-              <button className={`node ${unlocked ? '' : 'locked'}`} style={{ '--c': w.color }} onClick={() => tap(w, i)} aria-label={`${w.name}${unlocked ? '' : ', locked'}`}>
-                <span className="node-emoji">{unlocked ? w.emoji : '🔒'}</span>
-              </button>
-              <div className="node-label">
-                <strong>{w.name}</strong>
-                <small>{w.technique}</small>
-                <Stars n={stars} size={18} />
-              </div>
-            </li>
-            </Fragment>
-          );
-        })}
-      </ol>
+      <SeaMap state={state} onTap={tap} />
 
       {install && (
         <button className="btn ghost install" onClick={install}>

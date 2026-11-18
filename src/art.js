@@ -129,3 +129,17 @@ ${eyeSVG}${brows}
 <path d="M38 93 Q70 130 102 93 Z" fill="#3b0a1a" stroke="#222" stroke-width="3" stroke-linejoin="round"/>${teeth}
 <ellipse cx="70" cy="113" rx="13" ry="6" fill="#ff7b9c"/>`;
 }
+
+// Coconut palm tree. viewBox 0 0 70 100, base at (35, 98).
+export function palmSVG() {
+  const frond = (a, flip, fill) =>
+    `<g transform="translate(35 32) scale(${flip ? -1 : 1} 1) rotate(${a})"><path d="M0 0 C8 -13 27 -17 46 -5 C31 -8 14 -3 0 0Z" fill="${fill}" stroke="#1d6b2e" stroke-width="1.6" stroke-linejoin="round"/><path d="M2 -1 C16 -8 30 -9 42 -5" stroke="#1d6b2e" stroke-width="1.2" fill="none" opacity=".7"/></g>`;
+  const right = [-75, -40, -5, 32].map((a, i) => frond(a, false, i % 2 ? '#3fb55a' : '#2e9e45')).join('');
+  const left = [-75, -40, -5, 32].map((a, i) => frond(a, true, i % 2 ? '#2e9e45' : '#3fb55a')).join('');
+  const rings = [90, 80, 70, 60, 50, 41].map((y) => `<path d="M${31 - (98 - y) * 0.02} ${y} Q35 ${y + 3} ${39 + (98 - y) * 0.01} ${y}" stroke="#6d3d14" stroke-width="1.6" fill="none" opacity=".5"/>`).join('');
+  return `
+<path d="M30 98 C28 76 33 56 31 32 L39 32 C41 56 36 76 41 98 Z" fill="#b5713a" stroke="#6d3d14" stroke-width="2" stroke-linejoin="round"/>${rings}
+${left}${right}
+<circle cx="31" cy="36" r="4.2" fill="#7b4a1e" stroke="#4a2a0e" stroke-width="1.4"/><circle cx="39" cy="37" r="4.2" fill="#7b4a1e" stroke="#4a2a0e" stroke-width="1.4"/><circle cx="35" cy="41" r="4.2" fill="#8a5624" stroke="#4a2a0e" stroke-width="1.4"/>
+<circle cx="30" cy="34.8" r="1.2" fill="#fff" opacity=".6"/><circle cx="38" cy="35.8" r="1.2" fill="#fff" opacity=".6"/>`;
+}

@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
+import Beach from './Beach';
 import Lesson from './Lesson';
 import MapScreen from './MapScreen';
 import Parent from './Parent';
@@ -9,7 +10,7 @@ import { applyRound, load, save } from './store';
 
 const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) && !window.navigator.standalone;
 
-export default function App() {
+function Screens() {
   const [state, setState] = useState(load);
   const [view, setView] = useState({ name: 'map', i: 0, k: 0 });
   const [result, setResult] = useState(null);
@@ -64,4 +65,13 @@ export default function App() {
     default:
       return <MapScreen state={state} setState={setState} go={go} install={install || (isIOS ? () => go('parent') : null)} />;
   }
+}
+
+export default function App() {
+  return (
+    <>
+      <Beach />
+      <Screens />
+    </>
+  );
 }
