@@ -1,15 +1,16 @@
 import { useState } from 'react';
 import { AVATARS } from './content';
-import { Vinu } from './ui';
+import { Hero } from './ui';
 
 export default function Welcome({ onDone }) {
   const [name, setName] = useState('');
   const [avatar, setAvatar] = useState(AVATARS[0]);
   return (
     <main className="screen center">
-      <Vinu size={96} mood="bounce" />
-      <h1 className="title">Vedic Maths Kids</h1>
-      <p className="lead">Hi! I'm Vinu the owl. Let's learn magic maths tricks from ancient India!</p>
+      <Hero size={120} className="bounce" />
+      <h1 className="title">Cupcake Hero</h1>
+      <p className="sub">Vedic Maths Adventure</p>
+      <p className="lead">Monsters are attacking the little people! Learn magic Vedic maths tricks to save them!</p>
       <form
         className="card form"
         onSubmit={(e) => {
@@ -27,7 +28,7 @@ export default function Welcome({ onDone }) {
           ))}
         </div>
         <button className="btn big" disabled={!name.trim()}>
-          Let's go! 🚀
+          Be a hero! 🦸
         </button>
       </form>
     </main>

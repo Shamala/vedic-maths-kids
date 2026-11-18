@@ -14,7 +14,7 @@ const CORE = [
     blurb: 'Find the number that makes 10',
     parentTip: 'Ask at random moments: "What is the friend of 6?" until the answer is instant. Fingers help at first!',
     lesson: [
-      { say: "Hi, I'm **Vinu**! Some numbers are best friends. Together they make **10**!", boards: [{ type: 'dots', n: 7 }, { type: 'eq', lines: [['a:7', '+', 'b:3', '=', 'c:10']] }] },
+      { say: "Hi, I'm **Cupcake Hero**! Some numbers are best friends. Together they make **10**!", boards: [{ type: 'dots', n: 7 }, { type: 'eq', lines: [['a:7', '+', 'b:3', '=', 'c:10']] }] },
       { say: 'Count the empty boxes to find the friend. **7** has **3** empty boxes, so **3** is its friend!', boards: [{ type: 'dots', n: 7 }] },
       { say: "What about **4**? Its friend is **6**, because 4 + 6 = 10.", boards: [{ type: 'dots', n: 4 }, { type: 'eq', lines: [['a:4', '+', 'b:6', '=', 'c:10']] }] },
       { say: 'Big numbers have friends too, and the friend **stays the same**!', boards: [{ type: 'eq', lines: [['a:7', '+', 'b:3', '=', 'c:10'], ['a:17', '+', 'b:3', '=', 'c:20'], ['a:27', '+', 'b:3', '=', 'c:30']] }] },

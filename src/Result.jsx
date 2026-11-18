@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { WORLDS } from './content';
 import { play } from './sound';
-import { Confetti, Stars, Vinu } from './ui';
+import { Confetti, Hero, Stars } from './ui';
 
 export default function Result({ result, worldIndex, go, sound }) {
   const w = WORLDS[worldIndex];
@@ -10,11 +10,13 @@ export default function Result({ result, worldIndex, go, sound }) {
   return (
     <main className="screen center result" style={{ '--c': w.color }}>
       {result.stars === 3 && <Confetti />}
-      <Vinu size={88} mood="bounce" />
-      <h1 className="title">{result.stars === 3 ? 'Super star!' : result.stars === 2 ? 'Great job!' : 'Well done!'}</h1>
+      <Hero size={110} mood="win" bites={result.retried} className="bounce" />
+      <h1 className="title">{result.stars === 3 ? 'Island saved!' : result.stars === 2 ? 'Great job, hero!' : 'You did it!'}</h1>
       <Stars n={result.stars} size={56} />
       <div className="card tally">
-        <p><b>{result.firstTry}</b> of 6 right the first time</p>
+        <p className="saved">😄😄😄😄😄😄</p>
+        <p>All 6 little people saved!</p>
+        <p><b>{result.firstTry}</b> of 6 monsters beaten first time</p>
         <p className="xp">+{result.xp} XP ⚡</p>
       </div>
       <div className="row col">

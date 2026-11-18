@@ -1,13 +1,13 @@
 {
-  "name": "Vedic Maths Kids",
-  "short_name": "Vedic Maths",
-  "description": "Learn fun Vedic maths tricks with Vinu the owl!",
+  "name": "Cupcake Hero: Vedic Maths",
+  "short_name": "Cupcake Hero",
+  "description": "Save the little people from monsters with Vedic maths tricks!",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#bfe9ff",
-  "theme_color": "#6c4cf1",
+  "background_color": "#ffd0e6",
+  "theme_color": "#e8458b",
   "categories": ["education", "kids"],
   "icons": [
     { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },

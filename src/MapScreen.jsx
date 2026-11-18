@@ -1,7 +1,7 @@
 import { Fragment, useState } from 'react';
 import { REALMS, WORLDS, levelOf } from './content';
 import { isUnlocked } from './store';
-import { Stars, Vinu } from './ui';
+import { Hero, Stars } from './ui';
 
 export default function MapScreen({ state, setState, go, install }) {
   const [sheet, setSheet] = useState(null);
@@ -42,8 +42,8 @@ export default function MapScreen({ state, setState, go, install }) {
       </div>
 
       <div className="speech">
-        <Vinu size={44} />
-        <p>{state.xp === 0 ? 'Tap the first island to start your adventure!' : 'Pick an island and learn a new trick!'}</p>
+        <Hero size={46} />
+        <p>{state.xp === 0 ? 'Monsters are attacking! Tap the first island to save the little people!' : 'Pick an island and save the little people!'}</p>
       </div>
 
       <ol className="path">

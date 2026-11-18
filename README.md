@@ -1,8 +1,18 @@
-# Vedic Maths Kids 🦉
+# Cupcake Hero: Vedic Maths 🧁
 
 **▶ Live app: https://shamala.github.io/vedic-maths-kids/**
 
-An installable React app (PWA) that teaches children aged 6-8 maths using Vedic techniques, as a game-like island adventure with Vinu the owl.
+An installable React app (PWA) that teaches children aged 6–12 maths with Vedic techniques. Monsters are attacking the little people on the island, and only **Cupcake Hero** (gold "C" chain, cool shades, red cape) can save them, by answering maths questions the Vedic way.
+
+## How a level works
+
+1. Learn the trick in a short lesson.
+2. Fight 6 monsters, one question each. A right answer zaps the monster and saves a little person.
+3. A wrong answer lets the monster **bite** Cupcake Hero (the cupcake gets eaten away). The Vedic method is shown so the child can try again.
+4. If all 6 questions are answered wrong, the cupcake is gobbled up and the level must be **restarted**.
+5. Stars: 0–1 bites = ⭐⭐⭐, 2–3 bites = ⭐⭐, 4–5 bites = ⭐. Stars unlock the next island and are kept as a best score.
+
+The artwork (hero and monsters) is original SVG in `src/art.js`. The bite rules live in `src/Quiz.jsx` (`MAX_BITES` in `src/art.js`).
 
 ## Islands (23, in three realms)
 
@@ -14,7 +24,7 @@ An installable React app (PWA) that teaches children aged 6-8 maths using Vedic 
 
 New islands unlock one after another, so a child keeps learning new concepts as they level up. To add another island, add an entry in `src/more.js` and put its id in `ORDER` in `src/content.js`. `npm run check` verifies every generated question.
 
-Each island has a short animated lesson, then a 6-question game. Wrong answers show the Vedic way, stars unlock the next island, and XP and streaks reward practice.
+XP, ranks and daily streaks reward practice.
 
 ## Parent dashboard
 

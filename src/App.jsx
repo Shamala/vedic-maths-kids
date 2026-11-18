@@ -40,6 +40,8 @@ export default function App() {
     window.scrollTo(0, 0);
   }, []);
 
+  const lose = (r) => setState((s) => applyRound(s, r));
+
   const finish = (r, i) => {
     setState((s) => applyRound(s, r));
     setResult(r);
@@ -54,7 +56,7 @@ export default function App() {
     case 'lesson':
       return <Lesson key={`l${view.i}`} worldIndex={view.i} go={go} sound={state.sound} />;
     case 'quiz':
-      return <Quiz key={`q${view.i}-${view.k}`} worldIndex={view.i} go={go} sound={state.sound} onFinish={finish} />;
+      return <Quiz key={`q${view.i}-${view.k}`} worldIndex={view.i} go={go} sound={state.sound} onFinish={finish} onLose={lose} />;
     case 'result':
       return <Result result={result} worldIndex={view.i} go={go} sound={state.sound} />;
     case 'parent':

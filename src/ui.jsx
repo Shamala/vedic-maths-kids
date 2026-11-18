@@ -1,4 +1,5 @@
-import { useMemo } from 'react';
+import { useId, useMemo } from 'react';
+import { cupcakeSVG, monsterSVG } from './art';
 
 export const Rich = ({ text }) => (
   <>
@@ -8,11 +9,29 @@ export const Rich = ({ text }) => (
   </>
 );
 
-export const Vinu = ({ size = 64, mood = '' }) => (
-  <span className={`vinu ${mood}`} style={{ fontSize: size }} role="img" aria-label="Vinu the owl">
-    🦉
-  </span>
-);
+// Cupcake Hero. mood: cool | hit | win. bites: 0..6 chunks eaten.
+export function Hero({ size = 80, mood = 'cool', bites = 0, className = '' }) {
+  const id = 'c' + useId().replace(/[^a-zA-Z0-9]/g, '');
+  const html = useMemo(() => cupcakeSVG({ bites, mood, id }), [bites, mood, id]);
+  return (
+    <svg
+      className={`hero ${mood} ${className}`}
+      viewBox="0 0 160 180"
+      width={size}
+      height={size * 1.125}
+      role="img"
+      aria-label={bites >= 6 ? 'Cupcake Hero, all eaten' : `Cupcake Hero${bites ? `, ${bites} bites eaten` : ''}`}
+      dangerouslySetInnerHTML={{ __html: html }}
+    />
+  );
+}
+
+export function Monster({ kind = 'gloop', size = 110, className = '' }) {
+  const html = useMemo(() => monsterSVG(kind), [kind]);
+  return <svg className={`monster ${className}`} viewBox="0 0 140 140" width={size} height={size} aria-hidden="true" dangerouslySetInnerHTML={{ __html: html }} />;
+}
+
+export const SCARED = ['😨', '😱', '😰', '🥺', '😟', '😧'];
 
 export const Stars = ({ n, max = 3, size = 22 }) => (
   <span className="stars" aria-label={`${n} of ${max} stars`} style={{ fontSize: size }}>
@@ -28,7 +47,7 @@ export function Confetti() {
   const bits = useMemo(
     () =>
       Array.from({ length: 28 }, (_, i) => ({
-        e: ['🎉', '⭐', '✨', '🎊', '🌟'][i % 5],
+        e: ['🧁', '⭐', '✨', '🍬', '🌟'][i % 5],
         left: Math.random() * 100,
         delay: Math.random() * 1.2,
         dur: 2.2 + Math.random() * 1.8,

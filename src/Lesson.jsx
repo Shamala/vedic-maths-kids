@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { WORLDS } from './content';
-import { Board, Rich, Vinu } from './ui';
+import { Board, Hero, Rich } from './ui';
 
 export default function Lesson({ worldIndex, go, sound }) {
   const w = WORLDS[worldIndex];
@@ -29,7 +29,7 @@ export default function Lesson({ worldIndex, go, sound }) {
       </div>
 
       <div className="speech big">
-        <Vinu size={56} mood={last ? 'bounce' : ''} />
+        <Hero size={58} mood={last ? 'win' : 'cool'} />
         <p><Rich text={step.say} /></p>
       </div>
 
@@ -38,7 +38,7 @@ export default function Lesson({ worldIndex, go, sound }) {
           <button className="btn ghost" onClick={() => setI(i - 1)}>← Back</button>
         )}
         {last ? (
-          <button className="btn big" onClick={() => go('quiz', worldIndex)}>Let's play! 🎮</button>
+          <button className="btn big" onClick={() => go('quiz', worldIndex)}>Fight the monsters! ⚔️</button>
         ) : (
           <button className="btn big" onClick={() => setI(i + 1)}>Next →</button>
         )}
