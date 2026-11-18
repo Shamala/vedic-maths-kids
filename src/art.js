@@ -2,58 +2,96 @@
 // Cupcake Hero: gold "C" chain, cool shades, red cape. viewBox 0 0 160 180.
 
 const BITES = [
-  [131, 98, 17], [29, 100, 17], [116, 152, 19], [46, 150, 19], [80, 38, 18], [80, 116, 36],
+  [136, 86, 15], [24, 88, 15], [108, 142, 17], [52, 144, 17], [80, 24, 16], [80, 98, 42],
 ];
 
 export const MAX_BITES = BITES.length;
 
+const f1 = (n) => Math.round(n * 10) / 10;
+const bez = (t, p0, p1, p2) => {
+  const u = 1 - t;
+  return [u * u * p0[0] + 2 * u * t * p1[0] + t * t * p2[0], u * u * p0[1] + 2 * u * t * p1[1] + t * t * p2[1]];
+};
+const bezAngle = (t, p0, p1, p2) =>
+  (Math.atan2(2 * (1 - t) * (p1[1] - p0[1]) + 2 * t * (p2[1] - p1[1]), 2 * (1 - t) * (p1[0] - p0[0]) + 2 * t * (p2[0] - p1[0])) * 180) / Math.PI;
+
+const sparkle = (x, y, r) => `<path d="M${x} ${y - r} Q${x} ${y} ${x + r} ${y} Q${x} ${y} ${x} ${y + r} Q${x} ${y} ${x - r} ${y} Q${x} ${y} ${x} ${y - r}Z" fill="#fff"/>`;
+
+// Cupcake Hero: glossy swirl, Wayfarer shades, chunky gold "C" chain, ribbed wrapper, red cape.
 export function cupcakeSVG({ bites = 0, mood = 'cool', id = 'cc' } = {}) {
   const cuts = BITES.slice(0, bites).map(([x, y, r]) => `<circle cx="${x}" cy="${y}" r="${r}" fill="#000"/>`).join('');
   const mouth =
     mood === 'hit'
-      ? '<ellipse cx="80" cy="101" rx="7" ry="8" fill="#6b1d1d"/>'
+      ? '<ellipse cx="80" cy="88" rx="6.5" ry="7.5" fill="#6b1d1d"/><ellipse cx="80" cy="91" rx="3.5" ry="3" fill="#ff7b9c"/>'
       : mood === 'win'
-        ? '<path d="M63 96 Q80 116 97 96 Z" fill="#6b1d1d"/><path d="M69 101 Q80 109 91 101" fill="#ff8fab"/>'
-        : '<path d="M67 99 Q80 109 95 97" stroke="#6b1d1d" stroke-width="3.5" fill="none" stroke-linecap="round"/>';
+        ? '<path d="M63 83 Q80 103 97 83 Z" fill="#6b1d1d"/><path d="M70 90 Q80 98 90 90 Q80 86 70 90Z" fill="#ff7b9c"/>'
+        : '<path d="M66 84 Q80 93 96 82" stroke="#5a1424" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M94.5 80 L98 82 L95 85.5" stroke="#5a1424" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>';
+
   const sprinkles = [
-    [52, 62, -30, '#4cc9f0'], [106, 64, 25, '#ffd60a'], [70, 50, 10, '#7ae582'], [92, 52, -20, '#9b5de5'],
-    [38, 96, 40, '#ffd60a'], [124, 98, -40, '#4cc9f0'], [60, 88, 15, '#ff595e'], [104, 86, -15, '#7ae582'],
+    [66, 28, -15, '#7ae582'], [92, 31, -25, '#9b5de5'], [49, 41, -35, '#4cc9f0'], [91, 42, 55, '#ff6b81'], [106, 43, 30, '#ffd60a'],
+    [36, 78, 35, '#ffd60a'], [53, 87, 45, '#ff6b9c'], [107, 86, -50, '#ff6b81'], [127, 80, -40, '#4cc9f0'], [72, 98, -15, '#7ae582'],
   ]
-    .map(([x, y, r, c]) => `<rect x="${x - 5}" y="${y - 2}" width="10" height="4" rx="2" fill="${c}" transform="rotate(${r} ${x} ${y})"/>`)
+    .map(([x, y, r, c]) => `<rect x="${x - 5.5}" y="${y - 2.2}" width="11" height="4.4" rx="2.2" fill="${c}" stroke="#fff" stroke-opacity=".5" stroke-width=".8" transform="rotate(${r} ${x} ${y})"/>`)
     .join('');
-  const stripes = [46, 62, 80, 98, 114].map((x, i) => `<path d="M${x - 6 + i * 2.4} 108 L${52 + i * 14} 168" stroke="#f2a93b" stroke-width="3"/>`).join('');
+
+  const ribs = [1, 2, 3, 4, 5].map((i) => `<path d="M${41 + i * 13} 103 L${49 + i * 10.4} 156" stroke="#cf8f17" stroke-width="2" stroke-linecap="round" opacity=".85"/>`).join('');
+
+  const P0 = [24, 84], P1 = [80, 128], P2 = [138, 84];
+  let links = '';
+  const N = 15;
+  for (let i = 0; i <= N; i++) {
+    const t = 0.02 + (i * 0.96) / N;
+    const [x, y] = bez(t, P0, P1, P2);
+    const ang = bezAngle(t, P0, P1, P2);
+    const face = i % 2 === 0;
+    const rx = face ? 6.4 : 4.4, ry = face ? 4.4 : 2.7;
+    links += `<g transform="translate(${f1(x)} ${f1(y)}) rotate(${f1(ang)})"><ellipse rx="${rx}" ry="${ry}" fill="none" stroke="#8a5a00" stroke-width="4.8"/><ellipse rx="${rx}" ry="${ry}" fill="none" stroke="url(#${id}g)" stroke-width="3"/></g>`;
+  }
+
   return `
 <defs>
-  <mask id="${id}m" maskUnits="userSpaceOnUse" x="0" y="0" width="160" height="180"><rect width="160" height="180" fill="#fff"/>${cuts}</mask>
-  <linearGradient id="${id}l" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3a3a4a"/><stop offset="1" stop-color="#0d0d16"/></linearGradient>
+  <mask id="${id}m" maskUnits="userSpaceOnUse" x="-10" y="0" width="180" height="180"><rect x="-10" width="180" height="180" fill="#fff"/>${cuts}</mask>
+  <linearGradient id="${id}f" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffc6dc"/><stop offset="1" stop-color="#ff8db7"/></linearGradient>
+  <linearGradient id="${id}w" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#f3b030"/><stop offset=".45" stop-color="#ffe27a"/><stop offset="1" stop-color="#f0a928"/></linearGradient>
+  <linearGradient id="${id}g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff3a8"/><stop offset=".5" stop-color="#ffc933"/><stop offset="1" stop-color="#d9971a"/></linearGradient>
+  <radialGradient id="${id}c" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#ff6b78"/><stop offset="1" stop-color="#c1121f"/></radialGradient>
+  <linearGradient id="${id}l" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#a5a5b0"/><stop offset="1" stop-color="#26262f"/></linearGradient>
+  <linearGradient id="${id}p" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f23a45"/><stop offset="1" stop-color="#b5121d"/></linearGradient>
 </defs>
 <g class="cape">
-  <path d="M58 88 C18 96 6 140 4 172 C30 162 50 174 72 168 L92 168 C112 174 134 162 156 172 C154 140 142 96 102 88 Z" fill="#e63946" stroke="#9d0208" stroke-width="3" stroke-linejoin="round"/>
-  <path d="M40 110 C32 130 28 150 26 164 M120 110 C128 130 132 150 134 164 M80 120 L80 166" stroke="#b5121d" stroke-width="3" fill="none" stroke-linecap="round" opacity=".7"/>
+  <path d="M30 84 C14 102 3 128 1 150 L21 175 C29 161 40 158 56 163 C72 168 86 166 101 160 C118 154 130 158 146 151 C156 147 163 142 168 137 C152 130 146 108 136 86 Z" fill="url(#${id}p)" stroke="#7a0a12" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M44 98 C35 120 29 140 27 158 C44 154 57 160 72 162 L90 162 C106 158 122 156 134 150 C131 130 126 108 116 98 Z" fill="#a30f1a" opacity=".85"/>
+  <path d="M26 96 C14 114 8 134 7 152 M148 126 C156 132 160 134 164 136" stroke="#ff8d8d" stroke-width="3" fill="none" stroke-linecap="round" opacity=".6"/>
 </g>
 <g mask="url(#${id}m)">
-  <path d="M34 106 L126 106 L112 168 Q80 176 48 168 Z" fill="#ffd166" stroke="#e09f1f" stroke-width="3" stroke-linejoin="round"/>
-  ${stripes}
-  <ellipse cx="80" cy="102" rx="54" ry="21" fill="#ff8fb8" stroke="#e5558a" stroke-width="3"/>
-  <ellipse cx="80" cy="80" rx="42" ry="20" fill="#ffa3c6" stroke="#e5558a" stroke-width="3"/>
-  <ellipse cx="80" cy="60" rx="30" ry="16" fill="#ffb8d3" stroke="#e5558a" stroke-width="3"/>
-  <path d="M68 48 Q80 28 92 48 Q80 54 68 48 Z" fill="#ffc9dd" stroke="#e5558a" stroke-width="3" stroke-linejoin="round"/>
-  <circle cx="80" cy="38" r="9" fill="#e63946" stroke="#9d0208" stroke-width="2.5"/><circle cx="76.5" cy="34.5" r="2.6" fill="#fff" opacity=".85"/>
+  <path d="M41 102 L119 102 L111 155 Q80 163 49 155 Z" fill="url(#${id}w)" stroke="#b07410" stroke-width="3" stroke-linejoin="round"/>
+  ${ribs}
+  <path d="M52 112 L57 148" stroke="#fff6c8" stroke-width="3" stroke-linecap="round" opacity=".7"/>
+  <ellipse cx="80" cy="86" rx="58" ry="19" fill="url(#${id}f)" stroke="#e0568f" stroke-width="3"/>
+  <path d="M34 94 Q52 104 70 99" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round" opacity=".45"/>
+  <ellipse cx="80" cy="62" rx="45" ry="22" fill="url(#${id}f)" stroke="#e0568f" stroke-width="3"/>
+  <path d="M42 70 Q48 80 64 83" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round" opacity=".45"/>
+  <path d="M50 38 C50 24 66 20 72 12 Q80 8 88 12 C94 20 110 24 110 38 C110 50 50 50 50 38Z" fill="url(#${id}f)" stroke="#e0568f" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M60 36 Q80 46 100 34 M66 27 Q82 33 96 26" stroke="#fff" stroke-width="2.6" fill="none" stroke-linecap="round" opacity=".5"/>
+  <circle cx="80" cy="15" r="10.5" fill="url(#${id}c)" stroke="#7a0a12" stroke-width="2.6"/>
+  <ellipse cx="76" cy="10.5" rx="4" ry="2.6" fill="#fff" opacity=".85" transform="rotate(-30 76 10.5)"/>
   ${sprinkles}
-  <circle cx="55" cy="100" r="5.5" fill="#ff5d8f" opacity=".55"/><circle cx="105" cy="100" r="5.5" fill="#ff5d8f" opacity=".55"/>
+  <circle cx="43" cy="76" r="7" fill="#ffd633" stroke="#e0a800" stroke-width="2"/><circle cx="117" cy="76" r="7" fill="#ffd633" stroke="#e0a800" stroke-width="2"/>
+  <circle cx="58" cy="91" r="5" fill="#ff5d8f" opacity=".4"/><circle cx="102" cy="91" r="5" fill="#ff5d8f" opacity=".4"/>
   <g class="shades">
-    <rect x="46" y="71" width="29" height="18" rx="7" fill="url(#${id}l)" stroke="#111" stroke-width="3"/>
-    <rect x="85" y="71" width="29" height="18" rx="7" fill="url(#${id}l)" stroke="#111" stroke-width="3"/>
-    <path d="M75 77 Q80 73 85 77" stroke="#111" stroke-width="3.5" fill="none"/>
-    <path d="M46 76 L38 72 M114 76 L122 72" stroke="#111" stroke-width="3.5" stroke-linecap="round"/>
-    <path d="M52 75 L59 75 M91 75 L98 75" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".8"/>
+    <path d="M37 51 Q80 44 123 51 L120 70 Q119 79 108 79 L90 79 Q85 79 84 72 L83 67 Q80 63 77 67 L76 72 Q75 79 70 79 L52 79 Q41 79 40 70 Z" fill="#15151d" stroke="#000" stroke-width="1.5" stroke-linejoin="round"/>
+    <path d="M44 55.5 L76 56 L74.5 70 Q73.5 75 68 75 L55 75 Q47.5 75 46 69 Z" fill="url(#${id}l)"/>
+    <path d="M84 56 L116 55.5 L114 69 Q112.5 75 105 75 L92 75 Q86.5 75 85.5 70 Z" fill="url(#${id}l)"/>
+    <path d="M55 56 L63 56 L56 75 L48 75Z M66 56 L70 56 L64 75 L60 75Z M95 56 L103 56 L96 75 L88 75Z M106 56 L110 56 L104 75 L100 75Z" fill="#fff" opacity=".32"/>
+    <ellipse cx="41" cy="53.5" rx="2.3" ry="1.2" fill="#ffc933"/><ellipse cx="119" cy="53.5" rx="2.3" ry="1.2" fill="#ffc933"/>
   </g>
   ${mouth}
-  <path d="M30 108 Q80 144 130 108" stroke="#a8730a" stroke-width="12" fill="none" stroke-linecap="round"/>
-  <path d="M30 108 Q80 144 130 108" stroke="#ffcf33" stroke-width="8" fill="none" stroke-linecap="round" stroke-dasharray="9 3"/>
-  <circle cx="80" cy="126" r="13.5" fill="#ffcf33" stroke="#a8730a" stroke-width="3"/>
-  <path d="M86.4 120.2 A8 8 0 1 0 86.4 131.8" stroke="#8a5a00" stroke-width="4.2" fill="none" stroke-linecap="round"/>
-  <circle cx="45" cy="92" r="5.5" fill="#ffcf33" stroke="#a8730a" stroke-width="2"/><circle cx="115" cy="92" r="5.5" fill="#ffcf33" stroke="#a8730a" stroke-width="2"/>
+  ${links}
+  <circle cx="80" cy="107" r="15.5" fill="url(#${id}g)" stroke="#8a5a00" stroke-width="3"/>
+  <circle cx="80" cy="107" r="11.6" fill="none" stroke="#b9801a" stroke-width="1.6"/>
+  <path d="M86 101.6 A7.6 7.6 0 1 0 86 112.4" stroke="#9a6500" stroke-width="4.6" fill="none" stroke-linecap="round"/>
+  <path d="M86 101.6 A7.6 7.6 0 1 0 86 112.4" stroke="#ffe27a" stroke-width="1.6" fill="none" stroke-linecap="round" opacity=".8" transform="translate(-.5 -.8)"/>
+  ${sparkle(33, 98, 5)}${sparkle(129, 98, 5)}${sparkle(92, 94, 4)}
 </g>`;
 }
 
@@ -84,6 +122,8 @@ export function monsterSVG(kind = 'gloop') {
 ${deco}
 <ellipse cx="46" cy="130" rx="16" ry="8" fill="${d}" stroke="#222" stroke-width="3"/><ellipse cx="96" cy="130" rx="16" ry="8" fill="${d}" stroke="#222" stroke-width="3"/>
 <path d="M18 120 C4 70 28 30 70 28 C112 30 136 70 122 120 C100 134 40 134 18 120 Z" fill="${c}" stroke="#222" stroke-width="4" stroke-linejoin="round"/>
+<path d="M30 112 C24 96 40 118 70 120 C96 122 112 112 114 104 C110 120 90 128 70 128 C50 128 34 122 30 112Z" fill="${d}" opacity=".35"/>
+<ellipse cx="40" cy="48" rx="15" ry="7" fill="#fff" opacity=".4" transform="rotate(-35 40 48)"/>
 <ellipse cx="12" cy="92" rx="11" ry="7" fill="${c}" stroke="#222" stroke-width="3" transform="rotate(-30 12 92)"/><ellipse cx="128" cy="92" rx="11" ry="7" fill="${c}" stroke="#222" stroke-width="3" transform="rotate(30 128 92)"/>
 ${eyeSVG}${brows}
 <path d="M38 93 Q70 130 102 93 Z" fill="#3b0a1a" stroke="#222" stroke-width="3" stroke-linejoin="round"/>${teeth}

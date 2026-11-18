@@ -64,7 +64,7 @@ export default function Quiz({ worldIndex, go, sound, onFinish, onLose }) {
       <main className="screen center lost" style={{ '--c': w.color }}>
         <div className="scene lostscene" aria-hidden="true">
           <div className="villagers">{SCARED.map((s, i) => <span key={i} className="scared">{s}</span>)}</div>
-          <div className="hero-wrap"><Hero size={104} mood="hit" bites={MAX_BITES} /></div>
+          <div className="hero-wrap"><Hero size={122} mood="hit" bites={MAX_BITES} /></div>
           <div className="monster-wrap smug"><Monster kind="boss" size={132} /></div>
         </div>
         <h1 className="title">Oh no!</h1>
@@ -106,7 +106,7 @@ export default function Quiz({ worldIndex, go, sound, onFinish, onLose }) {
             <span key={i} className={i < saved ? 'ok' : 'scared'}>{i < saved ? '😄' : SCARED[i]}</span>
           ))}
         </div>
-        <div className="hero-wrap"><Hero size={104} mood={fx === 'bite' ? 'hit' : solved ? 'win' : 'cool'} bites={bites} /></div>
+        <div className="hero-wrap"><Hero size={122} mood={fx === 'bite' ? 'hit' : solved ? 'win' : 'cool'} bites={bites} /></div>
         <div className={`monster-wrap ${solved ? 'poof' : ''}`} key={idx}><Monster kind={kind} size={idx === questions.length - 1 ? 132 : 108} /></div>
         {solved && <div className="zap" aria-hidden="true">💥</div>}
       </div>

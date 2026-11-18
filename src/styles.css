@@ -203,7 +203,7 @@ button:focus-visible, input:focus-visible { outline: 4px solid #ffc83d; outline-
 .villagers { position: absolute; left: 6px; bottom: 10px; width: 78px; display: flex; flex-wrap: wrap; gap: 2px; font-size: 1.45rem; line-height: 1; z-index: 2; }
 .villagers .scared { animation: shiver .35s infinite alternate; }
 .villagers .ok { animation: hop .6s ease-out; }
-.hero-wrap { position: absolute; left: 26%; bottom: 6px; z-index: 3; transition: transform .25s; }
+.hero-wrap { position: absolute; left: 22%; bottom: 6px; z-index: 3; transition: transform .25s; }
 .monster-wrap { position: absolute; right: 4px; bottom: 8px; z-index: 3; animation: approach .7s ease-out, float 1.4s ease-in-out .7s infinite; }
 .scene.bite .monster-wrap { animation: lunge .75s ease-in-out; }
 .scene.bite { animation: shake .45s; }

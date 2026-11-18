@@ -7,7 +7,7 @@ export default function Welcome({ onDone }) {
   const [avatar, setAvatar] = useState(AVATARS[0]);
   return (
     <main className="screen center">
-      <Hero size={120} className="bounce" />
+      <Hero size={160} className="bounce" />
       <h1 className="title">Cupcake Hero</h1>
       <p className="sub">Vedic Maths Adventure</p>
       <p className="lead">Monsters are attacking the little people! Learn magic Vedic maths tricks to save them!</p>
