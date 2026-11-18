@@ -8,7 +8,7 @@ export default function Welcome({ onDone }) {
   return (
     <main className="screen center">
       <Hero size={160} className="bounce" />
-      <h1 className="title">Cupcake Hero</h1>
+      <h1 className="title">Maths with Commander Cupcake</h1>
       <p className="sub">Vedic Maths Adventure</p>
       <p className="lead">Monsters are attacking the little people! Learn magic Vedic maths tricks to save them!</p>
       <form

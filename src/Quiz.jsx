@@ -132,7 +132,7 @@ export default function Quiz({ worldIndex, go, sound, onFinish, onLose }) {
       {lost ? (
         <>
           <h1 className="title lost-title">Oh no!</h1>
-          <p className="lead center-text">The monster gobbled up Cupcake Hero and the little people ran away! Learn the trick again and save them.</p>
+          <p className="lead center-text">The monster gobbled up Commander Cupcake and the little people ran away! Learn the trick again and save them.</p>
           <div className="row">
             <button className="btn alt" onClick={() => go('lesson', worldIndex)}>Review lesson 📖</button>
             <button className="btn ghost" onClick={() => go('map')}>Back to map</button>

@@ -1,6 +1,6 @@
 {
-  "name": "Cupcake Hero: Vedic Maths",
-  "short_name": "Cupcake Hero",
+  "name": "Maths with Commander Cupcake",
+  "short_name": "Commander Cupcake",
   "description": "Save the little people from monsters with Vedic maths tricks!",
   "start_url": "./",
   "scope": "./",

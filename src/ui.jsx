@@ -9,7 +9,7 @@ export const Rich = ({ text }) => (
   </>
 );
 
-// Cupcake Hero. mood: cool | hit | win. bites: 0..6 chunks eaten.
+// Commander Cupcake. mood: cool | hit | win. bites: 0..6 chunks eaten.
 export function Hero({ size = 80, mood = 'cool', bites = 0, className = '' }) {
   const id = 'c' + useId().replace(/[^a-zA-Z0-9]/g, '');
   const html = useMemo(() => cupcakeSVG({ bites, mood, id }), [bites, mood, id]);
@@ -20,7 +20,7 @@ export function Hero({ size = 80, mood = 'cool', bites = 0, className = '' }) {
       width={size}
       height={size * 1.125}
       role="img"
-      aria-label={bites >= 6 ? 'Cupcake Hero, all eaten' : `Cupcake Hero${bites ? `, ${bites} bites eaten` : ''}`}
+      aria-label={bites >= 6 ? 'Commander Cupcake, all eaten' : `Commander Cupcake${bites ? `, ${bites} bites eaten` : ''}`}
       dangerouslySetInnerHTML={{ __html: html }}
     />
   );

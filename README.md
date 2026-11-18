@@ -1,4 +1,4 @@
-# Cupcake Hero: Vedic Maths 🧁
+# Maths with Commander Cupcake 🧁
 
 **▶ Live app: https://shamala.github.io/vedic-maths-kids/**
 
