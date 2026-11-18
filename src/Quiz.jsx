@@ -1,25 +1,34 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { MAX_BITES, MONSTER_KINDS } from './art';
-import { WORLDS } from './content';
+import { WORLDS, rnd } from './content';
 import { play } from './sound';
 import { Hero, Monster, Rich, SCARED, Stars } from './ui';
 
-export const starsFor = (bites) => (bites <= 1 ? 3 : bites <= 3 ? 2 : 1);
+export const CHANCES = 5; // the 6th wrong answer means the monster gobbles the cupcake
+export const starsFor = (wrong) => (wrong <= 1 ? 3 : wrong <= 3 ? 2 : 1);
 
 export default function Quiz({ worldIndex, go, sound, onFinish, onLose }) {
   const w = WORLDS[worldIndex];
   const questions = useMemo(() => w.make(), [w]);
   const started = useRef(Date.now());
   const timer = useRef();
+  const strikesRef = useRef(0);
   const [idx, setIdx] = useState(0);
   const [wrongPicks, setWrongPicks] = useState([]);
   const [solved, setSolved] = useState(false);
-  const [bites, setBites] = useState(0); // questions answered wrongly = chunks eaten
+  const [strikes, setStrikes] = useState(0); // every wrong answer eats a bite
   const [firstTry, setFirstTry] = useState(0);
   const [fx, setFx] = useState('');
   const [lost, setLost] = useState(false);
+  const [showRestart, setShowRestart] = useState(false);
 
   useEffect(() => () => clearTimeout(timer.current), []);
+
+  // villagers scatter in fear in random directions
+  const flee = useMemo(
+    () => questions.map(() => ({ '--dx': `${rnd(20, 250)}px`, '--dy': `${rnd(-125, -5)}px`, '--r': `${rnd(-40, 40)}deg` })),
+    [questions]
+  );
 
   const q = questions[idx];
   const missed = wrongPicks.length > 0;
@@ -35,17 +44,20 @@ export default function Quiz({ worldIndex, go, sound, onFinish, onLose }) {
     }
     play('bad', sound);
     setWrongPicks((p) => [...p, o]);
+    strikesRef.current += 1;
+    const n = strikesRef.current;
+    setStrikes(n);
+    if (n > CHANCES) {
+      setLost(true);
+      setFx('');
+      clearTimeout(timer.current);
+      timer.current = setTimeout(() => setShowRestart(true), 1500);
+      onLose({ id: w.id, stars: 0, firstTry, retried: idx + 1 - firstTry, secs: secs(), xp: 0 });
+      return;
+    }
     setFx('bite');
     clearTimeout(timer.current);
     timer.current = setTimeout(() => setFx(''), 850);
-    if (!missed) {
-      const nb = bites + 1;
-      setBites(nb);
-      if (nb >= MAX_BITES) {
-        setLost(true);
-        onLose({ id: w.id, stars: 0, firstTry, retried: MAX_BITES, secs: secs(), xp: 0 });
-      }
-    }
   };
 
   const next = () => {
@@ -55,31 +67,14 @@ export default function Quiz({ worldIndex, go, sound, onFinish, onLose }) {
       setSolved(false);
       return;
     }
-    const stars = starsFor(bites);
-    onFinish({ id: w.id, stars, firstTry, retried: bites, secs: secs(), xp: firstTry * 10 + bites * 5 + stars * 5 }, worldIndex);
+    const stars = starsFor(strikes);
+    onFinish({ id: w.id, stars, firstTry, retried: questions.length - firstTry, strikes, secs: secs(), xp: firstTry * 10 + (questions.length - firstTry) * 5 + stars * 5 }, worldIndex);
   };
 
-  if (lost) {
-    return (
-      <main className="screen center lost" style={{ '--c': w.color }}>
-        <div className="scene lostscene" aria-hidden="true">
-          <div className="villagers">{SCARED.map((s, i) => <span key={i} className="scared">{s}</span>)}</div>
-          <div className="hero-wrap"><Hero size={122} mood="hit" bites={MAX_BITES} /></div>
-          <div className="monster-wrap smug"><Monster kind="boss" size={132} /></div>
-        </div>
-        <h1 className="title">Oh no!</h1>
-        <p className="lead">The monsters gobbled up Cupcake Hero! Learn the trick again and save the little people.</p>
-        <div className="row col">
-          <button className="btn big" onClick={() => go('quiz', worldIndex)}>Try this level again 🔁</button>
-          <button className="btn alt" onClick={() => go('lesson', worldIndex)}>Review the lesson 📖</button>
-          <button className="btn ghost" onClick={() => go('map')}>Back to map</button>
-        </div>
-      </main>
-    );
-  }
-
+  const left = Math.max(0, CHANCES - strikes);
   const saved = idx + (solved ? 1 : 0);
   const kind = MONSTER_KINDS[idx % MONSTER_KINDS.length];
+  const bites = Math.min(strikes, MAX_BITES);
 
   return (
     <main className="screen quiz" style={{ '--c': w.color }}>
@@ -94,48 +89,79 @@ export default function Quiz({ worldIndex, go, sound, onFinish, onLose }) {
       </header>
 
       <div className="hud">
-        <Stars n={starsFor(bites)} size={22} />
-        <span className="hp">🧁 {MAX_BITES - bites}/{MAX_BITES} left</span>
+        <Stars n={lost ? 0 : starsFor(strikes)} size={22} />
+        <span className="chances" aria-label={`${left} chances left`}>
+          {Array.from({ length: CHANCES }, (_, i) => (
+            <span key={i} className={i < left ? 'chance' : 'chance used'}>🧁</span>
+          ))}
+        </span>
       </div>
 
-      <div className={`scene ${fx} ${solved ? 'won' : ''}`}>
+      <div className={`scene ${fx} ${solved ? 'won' : ''} ${lost ? 'gobbled' : ''}`}>
         <span className="house h1">🏡</span>
         <span className="house h2">🏠</span>
-        <div className="villagers" aria-label={`${saved} of ${questions.length} little people saved`}>
+        <div className="villagers" aria-label={lost ? 'The little people are running away in fear' : `${saved} of ${questions.length} little people saved`}>
           {questions.map((_, i) => (
-            <span key={i} className={i < saved ? 'ok' : 'scared'}>{i < saved ? '😄' : SCARED[i]}</span>
+            <span key={i} className={lost ? 'flee' : i < saved ? 'ok' : 'scared'} style={lost ? flee[i] : undefined}>
+              {lost ? SCARED[i] : i < saved ? '😄' : SCARED[i]}
+            </span>
           ))}
         </div>
-        <div className="hero-wrap"><Hero size={122} mood={fx === 'bite' ? 'hit' : solved ? 'win' : 'cool'} bites={bites} /></div>
-        <div className={`monster-wrap ${solved ? 'poof' : ''}`} key={idx}><Monster kind={kind} size={idx === questions.length - 1 ? 132 : 108} /></div>
+        <div className="hero-wrap"><Hero size={122} mood={lost || fx === 'bite' ? 'hit' : solved ? 'win' : 'cool'} bites={lost ? MAX_BITES : bites} /></div>
+        <div className={`monster-wrap ${solved ? 'poof' : ''}`} key={lost ? 'gobble' : idx}>
+          <Monster kind={kind} size={lost ? 140 : idx === questions.length - 1 ? 132 : 108} />
+        </div>
+        {lost && (
+          <div className="crumbs" aria-hidden="true">
+            {['🍬', '🧁', '✨', '🍬', '🧁', '✨'].map((c, i) => <span key={i} style={{ '--cx': `${(i - 2.5) * 34}px`, '--cy': `${-30 - (i % 3) * 22}px` }}>{c}</span>)}
+          </div>
+        )}
         {solved && <div className="zap" aria-hidden="true">💥</div>}
+        {lost && showRestart && (
+          <div className="restart-overlay">
+            <button className="btn big restart" onClick={() => go('quiz', worldIndex)}>Restart level 🔁</button>
+          </div>
+        )}
       </div>
 
-      <h1 className={`qtext ${q.text.length > 14 ? 'long' : ''}`} aria-live="polite">{q.text}</h1>
+      {lost ? (
+        <>
+          <h1 className="title lost-title">Oh no!</h1>
+          <p className="lead center-text">The monster gobbled up Cupcake Hero and the little people ran away! Learn the trick again and save them.</p>
+          <div className="row">
+            <button className="btn alt" onClick={() => go('lesson', worldIndex)}>Review lesson 📖</button>
+            <button className="btn ghost" onClick={() => go('map')}>Back to map</button>
+          </div>
+        </>
+      ) : (
+        <>
+          <h1 className={`qtext ${q.text.length > 14 ? 'long' : ''}`} aria-live="polite">{q.text}</h1>
 
-      <div className="answers">
-        {q.options.map((o) => {
-          const cls = solved && o === q.ans ? 'ans good' : wrongPicks.includes(o) ? 'ans bad' : 'ans';
-          return (
-            <button key={o} className={cls} onClick={() => pick(o)} disabled={wrongPicks.includes(o)}>
-              {o}
+          <div className="answers">
+            {q.options.map((o) => {
+              const cls = solved && o === q.ans ? 'ans good' : wrongPicks.includes(o) ? 'ans bad' : 'ans';
+              return (
+                <button key={o} className={cls} onClick={() => pick(o)} disabled={wrongPicks.includes(o)}>
+                  {o}
+                </button>
+              );
+            })}
+          </div>
+
+          <div className={`speech big ${missed || solved ? '' : 'hidden'}`} role="status">
+            <span className="bubble-emoji">{solved ? '💥' : '😬'}</span>
+            <p>
+              {solved ? <b>{missed ? 'Monster defeated! ' : 'Zap! Monster defeated! '}</b> : <b>Chomp! {left === 0 ? 'Last chance!' : `${left} ${left === 1 ? 'chance' : 'chances'} left.`} </b>}
+              {(missed || solved) && <Rich text={`Vedic way: ${q.hint}`} />}
+            </p>
+          </div>
+
+          {solved && (
+            <button className="btn big next" onClick={next}>
+              {idx + 1 < questions.length ? 'Next monster →' : 'Save the island! 🏝️'}
             </button>
-          );
-        })}
-      </div>
-
-      <div className={`speech big ${missed || solved ? '' : 'hidden'}`} role="status">
-        <span className="bubble-emoji">{solved ? '💥' : '😬'}</span>
-        <p>
-          {solved ? <b>{missed ? 'Monster defeated! ' : 'Zap! Monster defeated! '}</b> : <b>Chomp! Try again. </b>}
-          {(missed || solved) && <Rich text={`Vedic way: ${q.hint}`} />}
-        </p>
-      </div>
-
-      {solved && (
-        <button className="btn big next" onClick={next}>
-          {idx + 1 < questions.length ? 'Next monster →' : 'Save the island! 🏝️'}
-        </button>
+          )}
+        </>
       )}
     </main>
   );

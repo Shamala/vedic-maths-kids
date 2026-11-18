@@ -10,7 +10,7 @@ export default function Result({ result, worldIndex, go, sound }) {
   return (
     <main className="screen center result" style={{ '--c': w.color }}>
       {result.stars === 3 && <Confetti />}
-      <Hero size={110} mood="win" bites={result.retried} className="bounce" />
+      <Hero size={110} mood="win" bites={result.strikes ?? 0} className="bounce" />
       <h1 className="title">{result.stars === 3 ? 'Island saved!' : result.stars === 2 ? 'Great job, hero!' : 'You did it!'}</h1>
       <Stars n={result.stars} size={56} />
       <div className="card tally">
