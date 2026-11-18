@@ -1,5 +1,7 @@
 # Vedic Maths Kids 🦉
 
+**▶ Live app: https://shamala.github.io/vedic-maths-kids/**
+
 An installable React app (PWA) that teaches children aged 6-8 maths using Vedic techniques, as a game-like island adventure with Vinu the owl.
 
 ## Islands (23, in three realms)
