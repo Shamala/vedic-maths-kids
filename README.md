@@ -2,16 +2,15 @@
 
 An installable React app (PWA) that teaches children aged 6-8 maths using Vedic techniques, as a game-like island adventure with Vinu the owl.
 
-## Islands (techniques)
+## Islands (23, in three realms)
 
-| Island | Technique |
+| Realm | Islands (techniques) |
 | --- | --- |
-| Ten Friends Island | Friends of 10 |
-| Cut-Down Cove | All from 9, the last from 10 (100 − 37) |
-| Nine Nest | Add 10, take back (+9, +8) |
-| Rocket Table Rise | Nikhilam: 7, 8, 9 tables |
-| Eleven Echo Canyon | Multiply by 11 |
-| Five Fort | Squares of numbers ending in 5 |
+| 🌱 Little Explorers (6–8) | Friends of 10 · Add 9s and 8s (add 10, take back) · Add from the left · Round and fix subtraction · All from 9, last from 10 · Double and halve |
+| 🧭 Trick Trekkers (8–10) | Nikhilam tables 7/8/9 · Multiply by 11 · Multiply by 5 · Multiply by 25 and 50 · Multiply by 9 and 99 (Ekanyunena) · Flip the percent · Magic digit sum (Beejank) · Divisibility by 3, 9, 11 · Divide by 9 |
+| 👑 Maths Maharajas (10–12) | Squares ending in 5 (Ekadhikena) · Squares near 50 · Squares near 100 · Nikhilam near 100 · ×11 with carry · Vertically and crosswise (Urdhva Tiryagbhyam) · Duplex squaring · Square roots |
+
+New islands unlock one after another, so a child keeps learning new concepts as they level up. To add another island, add an entry in `src/more.js` and put its id in `ORDER` in `src/content.js`. `npm run check` verifies every generated question.
 
 Each island has a short animated lesson, then a 6-question game. Wrong answers show the Vedic way, stars unlock the next island, and XP and streaks reward practice.
 

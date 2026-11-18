@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { WORLDS, levelOf } from './content';
+import { Fragment, useState } from 'react';
+import { REALMS, WORLDS, levelOf } from './content';
 import { isUnlocked } from './store';
 import { Stars, Vinu } from './ui';
 
@@ -51,7 +51,13 @@ export default function MapScreen({ state, setState, go, install }) {
           const unlocked = isUnlocked(WORLDS, i, state);
           const stars = state.worlds[w.id]?.stars || 0;
           return (
-            <li key={w.id} className={`node-row ${i % 2 ? 'right' : 'left'}`}>
+            <Fragment key={w.id}>
+            {(i === 0 || WORLDS[i - 1].realm !== w.realm) && (
+              <li className="realm">
+                {REALMS[w.realm - 1].emoji} {REALMS[w.realm - 1].name} <small>{REALMS[w.realm - 1].age}</small>
+              </li>
+            )}
+            <li className={`node-row ${i % 2 ? 'right' : 'left'}`}>
               <button className={`node ${unlocked ? '' : 'locked'}`} style={{ '--c': w.color }} onClick={() => tap(w, i)} aria-label={`${w.name}${unlocked ? '' : ', locked'}`}>
                 <span className="node-emoji">{unlocked ? w.emoji : '🔒'}</span>
               </button>
@@ -61,6 +67,7 @@ export default function MapScreen({ state, setState, go, install }) {
                 <Stars n={stars} size={18} />
               </div>
             </li>
+            </Fragment>
           );
         })}
       </ol>

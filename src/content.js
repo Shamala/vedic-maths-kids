@@ -1,47 +1,10 @@
 // Worlds, lessons and question generators for the six Vedic tricks.
-export const rnd = (a, b) => Math.floor(Math.random() * (b - a + 1)) + a;
-export const shuffle = (arr) => {
-  const a = [...arr];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = rnd(0, i);
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-};
+import { ROUND, q, rnd, shuffle, unique } from './helpers.js';
+import { MORE } from './more.js';
 
-const ROUND = 6;
+export { rnd, shuffle };
 
-function options(ans, traps) {
-  const s = new Set([ans]);
-  for (const c of traps) {
-    if (s.size >= 4) break;
-    if (Number.isInteger(c) && c >= 0) s.add(c);
-  }
-  for (let d = 1; s.size < 4; d++) {
-    const c = ans + (rnd(0, 1) ? d : -d);
-    if (c >= 0) s.add(c);
-  }
-  return shuffle([...s]);
-}
-
-const q = (text, ans, traps, hint) => ({ text, ans, options: options(ans, traps), hint });
-
-// Draw `ROUND` unique questions from a generator
-function unique(gen, n = ROUND) {
-  const seen = new Set();
-  const out = [];
-  let guard = 0;
-  while (out.length < n && guard++ < 200) {
-    const item = gen(out.length);
-    if (!seen.has(item.text)) {
-      seen.add(item.text);
-      out.push(item);
-    }
-  }
-  return out;
-}
-
-export const WORLDS = [
+const CORE = [
   {
     id: 'friends',
     name: 'Ten Friends Island',
@@ -213,7 +176,23 @@ export const WORLDS = [
   },
 ];
 
-export const LEVELS = ['Number Newbie', 'Counting Cub', 'Maths Mouse', 'Trick Tiger', 'Vedic Voyager', 'Speed Star', 'Maths Maharaja'];
+const ORDER = [
+  'friends', 'nines', 'splitadd', 'roundfix', 'subtract', 'double',
+  'tables', 'eleven', 'highfive', 'quarter', 'ninesmult', 'percent', 'digitsum', 'detective', 'div9',
+  'five', 'fifty', 'hundred', 'nikhilam100', 'elevencarry', 'crosswise', 'duplex', 'sqrt',
+];
+export const REALMS = [
+  { id: 1, name: 'Little Explorers', age: 'ages 6–8', emoji: '🌱', count: 6 },
+  { id: 2, name: 'Trick Trekkers', age: 'ages 8–10', emoji: '🧭', count: 9 },
+  { id: 3, name: 'Maths Maharajas', age: 'ages 10–12', emoji: '👑', count: 8 },
+];
+const all = Object.fromEntries([...CORE, ...MORE].map((w) => [w.id, w]));
+let at = 0;
+export const WORLDS = REALMS.flatMap((r) =>
+  ORDER.slice(at, (at += r.count)).map((id) => ({ ...all[id], realm: r.id }))
+);
+
+export const LEVELS = ['Number Newbie', 'Counting Cub', 'Maths Mouse', 'Trick Tiger', 'Vedic Voyager', 'Speed Star', 'Number Ninja', 'Quick-Fire Guru', 'Ganit Genius', 'Vedic Veteran', 'Maths Maharaja', 'Grand Maharaja'];
 export const levelOf = (xp) => {
   const lvl = Math.floor(xp / 100);
   return { n: lvl + 1, title: LEVELS[Math.min(lvl, LEVELS.length - 1)], pct: xp % 100 };

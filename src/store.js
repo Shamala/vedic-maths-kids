@@ -54,4 +54,5 @@ export function applyRound(s, r) {
   };
 }
 
-export const isUnlocked = (worlds, index, state) => index === 0 || (state.worlds[worlds[index - 1].id]?.stars || 0) >= 1;
+export const isUnlocked = (worlds, index, state) =>
+  index === 0 || (state.worlds[worlds[index - 1].id]?.stars || 0) >= 1 || !!state.worlds[worlds[index].id];

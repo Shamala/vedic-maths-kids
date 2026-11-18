@@ -51,7 +51,7 @@ export default function Quiz({ worldIndex, go, sound, onFinish }) {
         <button className="back" onClick={() => go('lesson', worldIndex)} aria-label="Re-read the lesson">💡</button>
       </header>
 
-      <h1 className="qtext" aria-live="polite">{q.text}</h1>
+      <h1 className={`qtext ${q.text.length > 14 ? 'long' : ''}`} aria-live="polite">{q.text}</h1>
 
       <div className="answers">
         {q.options.map((o) => {
